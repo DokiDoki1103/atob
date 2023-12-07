@@ -1,0 +1,121 @@
+definitions:
+  BadRequest:
+    properties:
+      code:
+        description: 错误码
+        format: int32
+        type: integer
+      msg:
+        description: 错误信息
+        type: string
+    type: object
+  build.BuildRequest:
+    properties:
+      sourceCodePath:
+        type: string
+    type: object
+  build.BuildResponse:
+    type: object
+  pull.DockerPullRequest:
+    properties:
+      imageName:
+        type: string
+    type: object
+  pull.DockerPullResponse:
+    type: object
+  pull.GitPullRequest:
+    properties:
+      sourceCode:
+        type: string
+    type: object
+  pull.GitPullResponse:
+    type: object
+info: {}
+paths:
+  /build:
+    post:
+      consumes:
+      - application/json
+      description: '-'
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/build.BuildRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/definitions/build.BuildResponse'
+              msg:
+                type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/BadRequest'
+      summary: '-'
+      tags:
+      - build
+  /docker/pull:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/pull.DockerPullRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/definitions/pull.DockerPullResponse'
+              msg:
+                type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/BadRequest'
+      tags:
+      - pull
+  /git/pull:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/pull.GitPullRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/definitions/pull.GitPullResponse'
+              msg:
+                type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/BadRequest'
+      tags:
+      - pull
+swagger: "2.0"
