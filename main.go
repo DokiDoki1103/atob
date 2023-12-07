@@ -1,38 +1,31 @@
 package main
 
 import (
-	"bufio"
 	"context"
-	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/archive"
+	"github.com/DokiDoki1103/atob/internal/api"
+	"github.com/DokiDoki1103/atob/pkg/docker"
+	"github.com/codfrm/cago"
+	"github.com/codfrm/cago/configs"
+	"github.com/codfrm/cago/pkg/component"
+	"github.com/codfrm/cago/server/mux"
+	"log"
 )
 
 func main() {
 	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cfg, err := configs.NewConfig("simple")
 	if err != nil {
-		panic(err)
+		log.Fatalf("load config err: %v", err)
 	}
-	defer cli.Close()
-	tar, err := archive.TarWithOptions("/Users", &archive.TarOptions{})
+
+	err = cago.New(ctx, cfg).
+		Registry(component.Core()).
+		Registry(docker.Docker()).
+		RegistryCancel(mux.HTTP(api.Router)).
+		Start()
+
 	if err != nil {
+		log.Fatalf("start err: %v", err)
 		return
 	}
-
-	// 构建 Docker 镜像
-	res, err := cli.ImageBuild(ctx, tar, types.ImageBuildOptions{
-		NoCache:    true,
-		Tags:       []string{"test:v1"},
-		Dockerfile: "Dockerfile",
-	})
-	defer res.Body.Close()
-
-	scanner := bufio.NewScanner(res.Body)
-	for scanner.Scan() {
-
-		fmt.Println(scanner.Text())
-	}
-
 }

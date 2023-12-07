@@ -1,0 +1,26 @@
+debug: true
+env: dev
+etcd:
+    endpoints:
+        - 127.0.0.1:2379
+    prefix: /config
+http:
+    address:
+        - 127.0.0.1:8080
+logger:
+    level: info
+    logfile:
+        enable: true
+        errorfilename: ./runtime/logs/cago.err.log
+        filename: ./runtime/logs/cago.log
+    loki:
+        enable: false
+        password: loki
+        url: http://127.0.0.1:3100/loki/api/v1/push
+        username: loki
+source: file
+trace:
+    endpoint: 192.168.1.136:14268
+    sample: 1
+    useSsl: false
+version: "1"
